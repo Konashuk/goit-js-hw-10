@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { fetchBreeds, fetchCatByBreed } from './js/cat-api';
+import SlimSelect from 'slim-select';
 
 axios.defaults.headers.common['x-api-key'] =
   'live_EBFK47rnbJbxqGyEs0tu4iC9ZJQc9CkpcCB6F4BWv2qM2Q3vddCcoLIukgwT26zy';
@@ -11,36 +12,44 @@ const containerCat = document.querySelector('.cat-info');
 selectBeeds.addEventListener('change', clickedSelect);
 
 fetchBreeds()
-  .then(data => data.forEach(data => selectOption(data)))
+  .then(data => selectOption(data))
   .catch(err => console.log(err));
 
 function selectOption(data) {
-  const valueSelect = data.id;
-  const nameSelect = data.name;
+  const murkapSelect = data
+    .map(({ id, name }) => {
+      return `<option value="${id}">${name}</option>`;
+    })
+    .join('');
 
-  const murkapSelect = `
-    <option value="${valueSelect}">${nameSelect}</option>`;
-  return selectBeeds.insertAdjacentHTML('beforeend', murkapSelect);
+  selectBeeds.insertAdjacentHTML('afterbegin', murkapSelect);
+
+  new SlimSelect({
+    select: '#selectElement',
+  });
 }
 
 function clickedSelect(event) {
   const breedId = event.currentTarget.value;
   fetchCatByBreed(breedId)
-    .then(data => console.log(data))
+    .then(data => cartCarMurkap(data))
     .catch(err => console.log(err));
 }
 
 function cartCarMurkap(data) {
-  const nameBreed = data.name;
-  const descBreed = data.description;
-  const temperBred = data.temperament;
-  const breedImg = data.url;
+  const nameBreed = data[0].breeds[0].name;
+  const descBreed = data[0].breeds[0].description;
+  const temperBred = data[0].breeds[0].temperament;
+  const breedImg = data[0].url;
 
   const cardCatMurkup = `
-  <img src="${breedImg}"/>
+  <img src="${breedImg}" width="300" alt="${nameBreed}"/>
+ <div claas="container-text">
   <h2>${nameBreed}</h2>
   <p>${descBreed}</p>
-  <h3>Temperament: ${temperBred}</h3>
+  <h3>Temperament:</h3>
+  <p>${temperBred}</p>
+  </div>
         `;
   return (containerCat.innerHTML = cardCatMurkup);
 }

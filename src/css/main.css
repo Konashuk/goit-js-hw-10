@@ -1,0 +1,12 @@
+.cat-info {
+  display: flex;
+}
+
+img {
+  margin-right: 10px;
+}
+
+.container-text {
+  display: flex;
+  flex-wrap: wrap;
+}
