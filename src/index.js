@@ -1,5 +1,6 @@
 import axios from 'axios';
 import SlimSelect from 'slim-select';
+import 'slim-select/dist/slimselect.css';
 
 import { fetchBreeds, fetchCatByBreed } from './js/cat-api';
 
@@ -18,6 +19,7 @@ selectBeeds.classList.add('is-hidden');
 fetchBreeds()
   .then(data => selectOption(data))
   .catch(err => errorMess());
+// .finally(loaderEl.classList.add('is-hidden'));
 
 function errorMess() {
   errorEl.classList.remove('is-hidden');
@@ -47,7 +49,7 @@ function clickedSelect(event) {
   loaderEl.classList.remove('is-hidden');
   fetchCatByBreed(breedId)
     .then(data => cartCarMurkap(data))
-    .catch(err => console.log(errorEl));
+    .catch(err => errorMess());
 }
 function cartCarMurkap(data) {
   loaderEl.classList.add('is-hidden');
